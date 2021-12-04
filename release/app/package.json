@@ -1,0 +1,17 @@
+{
+  "name": "worksession-client",
+  "productName": "Assure Health Worksession Client",
+  "version": "1.2.0",
+  "description": "Assure Health Worksession Client",
+  "main": "./dist/main/main.js",
+  "author": "Assure Health Corporation",
+  "license": "EULA",
+  "scripts": {
+    "electron-rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
+    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts",
+    "postinstall": "npm run electron-rebuild && npm run link-modules"
+  },
+  "dependencies": {
+    "ffmpeg-static-electron": "^2.0.3"
+  }
+}
