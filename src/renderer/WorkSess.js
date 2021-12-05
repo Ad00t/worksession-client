@@ -156,9 +156,17 @@ export function getClinicianInfo(browser) {
                     let errors = [];
                     let priorURL = browser.getURL();
 
-                    await browser.executeJavaScript('document.querySelector("button.branding-userProfile-button").click();');
+                    await browser.executeJavaScript(`
+                        (() => {
+                            try {
+                              document.querySelector("button.branding-userProfile-button").click();
+                            } catch (err) {
+                              console.log(err);
+                            }
+                        })();
+                    `);
                     let start = Date.now();
-                    while (href === '' && (Date.now() - start) <= 8500) {
+                    while (href === '' && (Date.now() - start) <= 9000) {
                         href = await browser.executeJavaScript(`
                             (() => {
                                 try {

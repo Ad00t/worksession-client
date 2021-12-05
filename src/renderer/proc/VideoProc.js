@@ -138,7 +138,7 @@ export function process(session, errors) {
     console.log(`Processing - ${session.payload.worksession_id}`);
     const workerSession = { ...session };
     delete workerSession.mergerRec;
-    const worker = new Worker(URL.createObjectURL(new Blob([fs.readFileSync('proc/RecStopWorker.js')], { type : 'text/plain' }), { type: 'module' }));
+    const worker = new Worker(new URL('./RecStopWorker.js', import.meta.url));
     worker.onmessage = e => {
         console.log('Event dispatched: processed');
         session.mergerRec.dispatchEvent(new Event('processed'));

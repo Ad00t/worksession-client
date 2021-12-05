@@ -106,7 +106,8 @@ const createWindow = async () => {
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
       contextIsolation: false,
-      webviewTag: true
+      webviewTag: true,
+      webSecurity: false
     },
   });
 

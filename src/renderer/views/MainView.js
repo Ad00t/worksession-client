@@ -294,6 +294,7 @@ export default function MainView({}) {
                         open={settingsOpen}
                         setOpen={setSettingsOpen}
                         browser={browserRef.current}
+                        sessions={sessStackState}
                       />
                     </Grid>
 

@@ -161,7 +161,9 @@ export default merge(baseConfig, {
     port,
     compress: true,
     hot: true,
-    headers: { 'Access-Control-Allow-Origin': '*' },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
     static: {
       publicPath: '/',
     },

@@ -17,7 +17,7 @@ export function getStagePrefix() {
 
 export async function getConfig(errors) {
     await s3.getObject({
-        Bucket: 'assurehealthconfigs', 
+        Bucket: 'assurehealthconfigs',
         Key: 'worksessionClientConfig.json',
         ResponseCacheControl: 'no-cache'
     }).promise()
@@ -34,13 +34,13 @@ export async function getConfig(errors) {
             }
         })
         .catch(err => {
-            errors.push('config-retrieval-error'); 
-            console.error(err); 
+            errors.push('config-retrieval-error');
+            console.error(err);
         });
 }
 
 export async function createWorksessionSf(session, errors) {
-    await axios.post(`https://${getStagePrefix()}assurehealthplatform.com/ws-api/worksessions`, { 
+    await axios.post(`https://${getStagePrefix()}assurehealthplatform.com/ws-api/worksessions`, {
         ...session.payload,
         start_time: util.toLS(session.payload.start_time, 'GMT'),
         end_time: util.toLS(session.payload.end_time, 'GMT')
@@ -48,14 +48,14 @@ export async function createWorksessionSf(session, errors) {
         .then(res => console.log(res))
         .catch(err => {
             console.error(err.response);
-            if (session.fromCache && err.response.data.message.includes('DUPLICATE_VALUE'))
+            if (session.fromCache && err.response && err.response.data.message.includes('DUPLICATE_VALUE'))
                 return;
-            errors.push(`create-ws-failed`); 
+            errors.push(`create-ws-failed`);
         });
 }
 
 export async function updateWorksessionSf(session, errors) {
-    await axios.patch(`https://${getStagePrefix()}assurehealthplatform.com/ws-api/worksessions`, { 
+    await axios.patch(`https://${getStagePrefix()}assurehealthplatform.com/ws-api/worksessions`, {
         worksession_id: session.payload.worksession_id,
         pdf_audit: session.payload.pdf_audit,
         video_audit: session.payload.video_audit
@@ -63,7 +63,7 @@ export async function updateWorksessionSf(session, errors) {
         .then(res => console.log(res))
         .catch(err => {
             console.error(err.response);
-            errors.push(`update-ws-failed`); 
+            errors.push(`update-ws-failed`);
         });
 }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogContent from '@material-ui/core/DialogContent';
 
 import TextField from '@material-ui/core/TextField';
@@ -18,12 +19,13 @@ import * as util from '../util/util';
 
 import * as WorkSess from '../WorkSess';
 
-export default function SettingsDialog({ open, setOpen, browser }) {
+export default function SettingsDialog({ open, setOpen, browser, sessions }) {
     const [devSettingsOpen, setDevSettingsOpen] = useState(false);
     const [passInput, setPassInput] = useState('');
     const [passFailed, setPassFailed] = useState(false);
     const [stageValue, setStageValue] = useState(config.get('stage'));
     const [loading, setLoading] = useState(false);
+    const [displayWarning, setDisplayWarning] = useState(false);
 
     function onDevPassSubmit(e) {
       e.preventDefault();
@@ -34,18 +36,25 @@ export default function SettingsDialog({ open, setOpen, browser }) {
     }
 
     function handleClose() {
-      setOpen(false);
-      setPassInput('');
-      setPassFailed(false);
+      if (!loading) {
+        setOpen(false);
+        setPassInput('');
+        setPassFailed(false);
+      }
     }
 
     async function handleStageChange(e) {
-      setStageValue(e.target.value);
-      config.set('stage', e.target.value);
-      setLoading(true);
-      WorkSess.clearClinicianInfo();
-      await browser.loadURL(util.getStage().urlBase);
-      setLoading(false);
+      setDisplayWarning(false);
+      if (sessions.length === 0) {
+        setStageValue(e.target.value);
+        config.set('stage', e.target.value);
+        setLoading(true);
+        WorkSess.clearClinicianInfo();
+        await browser.loadURL(util.getStage().urlBase);
+        setLoading(false);
+      } else {
+        setDisplayWarning(true);
+      }
     }
 
     return (
@@ -72,6 +81,13 @@ export default function SettingsDialog({ open, setOpen, browser }) {
                   <FormControlLabel disabled={loading} value="prod" control={<Radio />} label="Prod" />
                 </RadioGroup>
               </FormControl>
+              { (displayWarning) &&
+                <DialogContentText
+                  color="secondary"
+                >
+                  Stage switching is blocked until all sessions are finished processing.
+                </DialogContentText>
+              }
             </div>
             :
             <form
